@@ -1,0 +1,30 @@
+data:
+  image: dylanlindgren/docker-laravel-data
+  volumes:
+    - /c/Users/Michael/dev/cart/:/data/www/:rw
+
+php:
+  image: ordercloud/phpcli
+  volumes_from:
+    - data
+  entrypoint: ["php"]
+
+bash:
+  image: ordercloud/phpcli
+  volumes_from:
+    - data
+  entrypoint: ["/bin/bash", "-c"]
+  command: ["true"]
+
+spec:
+  image: ordercloud/phpcli
+  volumes_from:
+    - data
+  entrypoint: ["vendor/bin/phpspec"]
+  command: ["run"]
+
+composer:
+  image: ordercloud/phpcli
+  volumes_from:
+    - data
+  entrypoint: ["/usr/bin/composer"]

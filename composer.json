@@ -1,0 +1,25 @@
+{
+  "name": "ordercloud/cart",
+  "description": "Ordercloud cart service",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Michael Nel",
+      "email": "michael@ordercloud.co.za"
+    }
+  ],
+  "require": {
+    "php": ">=5.4",
+    "ordercloud/ordercloud": "dev-develop",
+    "predis/predis": "v1.0.1"
+  },
+  "require-dev": {
+    "phpspec/phpspec": "2.2.0",
+    "phpspec/nyan-formatters": "1.0.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Ordercloud\\Cart\\": "src/"
+    }
+  }
+}
