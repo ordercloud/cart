@@ -11,7 +11,7 @@
   "require": {
     "php": ">=5.4",
     "ordercloud/ordercloud": "dev-develop",
-    "predis/predis": "v1.0.1"
+    "predis/predis": "*"
   },
   "require-dev": {
     "phpspec/phpspec": "2.2.0",
