@@ -134,11 +134,11 @@ class Cart
      */
     public function isProductOfMerchantInCart($merchantId)
     {
-        return in_array($merchantId, array_keys($this->getProductOrganisations()));
+        return in_array($merchantId, array_keys($this->getMerchantsOfProducts()));
     }
 
     /**
-     * @return array|Organisation[]
+     * @return array|OrganisationShort[]
      */
     public function getMerchantsOfProducts()
     {
@@ -160,7 +160,7 @@ class Cart
      */
     public function getItemsByMerchantID($merchantID)
     {
-        return array_filter($this->getItems(), function ($item) use ($merchantID)
+        return array_filter($this->getItems(), function (CartItem $item) use ($merchantID)
         {
             return $item->getProduct()->getOrganisation()->getId() == $merchantID;
         });
