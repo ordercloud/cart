@@ -49,7 +49,12 @@ class Cart
      */
     public function updateItemQuantity($itemPuid, $quantity)
     {
-        $this->items[$itemPuid]->setQuantity($quantity);
+        if ($quantity > 0) {
+            $this->items[$itemPuid]->setQuantity($quantity);
+        }
+        else {
+            $this->removeItem($itemPuid);
+        }
     }
 
     /**
