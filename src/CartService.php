@@ -81,18 +81,14 @@ class CartService
     /**
      * @param int    $cartId
      * @param string $itemPuid
-     *
-     * @return int Quantity of removed item
      */
     public function removeItem($cartId, $itemPuid)
     {
         $cart = $this->getCartById($cartId);
 
-        $quantityRemoved = $cart->removeItem($itemPuid);
+        $cart->removeItem($itemPuid);
 
         $this->saveCart($cart);
-
-        return $quantityRemoved;
     }
 
     /**

@@ -33,20 +33,14 @@ class Cart
 
     /**
      * @param $itemPUID
-     *
-     * @return int Number of removed items
      */
     public function removeItem($itemPUID)
     {
         if ( ! isset($this->items[$itemPUID])) {
-            return 0;
+            return; // TODO should we throw exception?
         }
 
-        $quantity = $this->items[$itemPUID]->getQuantity();
-
         unset($this->items[$itemPUID]);
-
-        return $quantity;
     }
 
     /**
