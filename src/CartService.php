@@ -53,15 +53,17 @@ class CartService
     }
 
     /**
-     * @param Cart $cart
+     * @param int $cartId
      */
-    public function destroyCart(Cart $cart)
+    public function destroyCart($cartId)
     {
+        $cart = $this->getCartById($cartId);
+
         $this->repository->destroy($cart);
     }
 
     /**
-     * @param         $cartId
+     * @param int     $cartId
      * @param Product $product
      * @param int     $quantity
      * @param array   $options array( optionSetId => optionId, ... )
@@ -77,13 +79,15 @@ class CartService
     }
 
     /**
-     * @param Cart   $cart
+     * @param int    $cartId
      * @param string $itemPuid
      *
      * @return int Quantity of removed item
      */
-    public function removeItem(Cart $cart, $itemPuid)
+    public function removeItem($cartId, $itemPuid)
     {
+        $cart = $this->getCartById($cartId);
+
         $quantityRemoved = $cart->removeItem($itemPuid);
 
         $this->saveCart($cart);
@@ -92,12 +96,14 @@ class CartService
     }
 
     /**
-     * @param Cart   $cart
+     * @param int    $cartId
      * @param string $itemPuid
      * @param int    $quantity
      */
-    public function updateItemQuantity(Cart $cart, $itemPuid, $quantity)
+    public function updateItemQuantity($cartId, $itemPuid, $quantity)
     {
+        $cart = $this->getCartById($cartId);
+
         $cart->updateItemQuantity($itemPuid, $quantity);
 
         $this->saveCart($cart);
