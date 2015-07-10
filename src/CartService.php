@@ -25,7 +25,7 @@ class CartService
      */
     public function createCart()
     {
-        $cart = Cart::create(uniqid());
+        $cart = new Cart(uniqid());
 
         $this->saveCart($cart);
 
