@@ -1,5 +1,6 @@
-<?php namespace Ordercloud\Cart;
+<?php namespace Ordercloud\Cart\Infrastructure;
 
+use Ordercloud\Cart\Entities\Cart;
 use Predis\Client;
 
 class RedisCartRepository implements CartRepository

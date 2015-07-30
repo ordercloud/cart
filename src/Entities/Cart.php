@@ -1,5 +1,7 @@
-<?php namespace Ordercloud\Cart;
+<?php namespace Ordercloud\Cart\Entities;
 
+use Ordercloud\Cart\Entities\Policies\BaseCartPolicy;
+use Ordercloud\Cart\Entities\Policies\CartPolicy;
 use Ordercloud\Entities\Organisations\OrganisationShort;
 use Ordercloud\Entities\Products\Product;
 
@@ -9,13 +11,19 @@ class Cart
     private $id;
     /** @var array|CartItem[] */
     private $items = [];
+    /**
+     * @var CartPolicy
+     */
+    private $policy;
 
     /**
-     * @param string $id
+     * @param string     $id
+     * @param CartPolicy $policy
      */
-    public function __construct($id)
+    public function __construct($id, CartPolicy $policy = null)
     {
         $this->id = $id;
+        $this->policy = is_null($policy) ? new BaseCartPolicy() : $policy;
     }
 
     /**
@@ -36,7 +44,7 @@ class Cart
     {
         $item = new CartItem($product, $quantity, $options, $extras);
 
-        $this->items[$item->getPuid()] = $item;
+        $this->items = $this->policy->add($item, $this->items);
     }
 
     /**
@@ -44,11 +52,9 @@ class Cart
      */
     public function removeItem($itemPUID)
     {
-        if ( ! isset($this->items[$itemPUID])) {
-            return; // TODO should we throw exception?
-        }
+        $item = $this->getItemByPuid($itemPUID);
 
-        unset($this->items[$itemPUID]);
+        $this->items = $this->policy->remove($item, $this->items);
     }
 
     /**
@@ -57,12 +63,17 @@ class Cart
      */
     public function updateItemQuantity($itemPuid, $quantity)
     {
-        if ($quantity > 0) {
-            $this->items[$itemPuid]->setQuantity($quantity);
-        }
-        else {
+        if ($quantity <= 0) {
             $this->removeItem($itemPuid);
+            return;
         }
+
+        $originalItem = $this->getItemByPuid($itemPuid);
+        $updatedItem = $this->getItemByPuid($itemPuid);
+
+        $updatedItem->setQuantity($quantity);
+
+        $this->items = $this->policy->update($originalItem, $updatedItem, $this->items);
     }
 
     /**

@@ -1,4 +1,4 @@
-<?php namespace Ordercloud\Cart;
+<?php namespace Ordercloud\Cart\Entities;
 
 use Ordercloud\Entities\Products\Product;
 use Ordercloud\Entities\Products\ProductOption;

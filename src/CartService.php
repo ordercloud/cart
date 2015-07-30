@@ -1,8 +1,10 @@
 <?php namespace Ordercloud\Cart;
 
-use Ordercloud\Entities\Organisations\Organisation;
+use Ordercloud\Cart\Entities\Cart;
+use Ordercloud\Cart\Entities\Policies\BaseCartPolicy;
+use Ordercloud\Cart\Entities\Policies\CartPolicy;
+use Ordercloud\Cart\Infrastructure\CartRepository;
 use Ordercloud\Entities\Products\Product;
-use Ordercloud\Ordercloud;
 
 class CartService
 {
@@ -10,14 +12,19 @@ class CartService
      * @var CartRepository
      */
     private $repository;
+    /**
+     * @var CartPolicy
+     */
+    private $cartPolicy;
 
     /**
-     * @param Ordercloud     $ordercloud
      * @param CartRepository $repository
+     * @param CartPolicy     $defaultCartPolicy
      */
-    public function __construct(CartRepository $repository)
+    public function __construct(CartRepository $repository, CartPolicy $defaultCartPolicy = null)
     {
         $this->repository = $repository;
+        $this->cartPolicy = is_null($defaultCartPolicy) ? new BaseCartPolicy() : $defaultCartPolicy;
     }
 
     /**
@@ -25,7 +32,7 @@ class CartService
      */
     public function createCart()
     {
-        $cart = new Cart(uniqid());
+        $cart = new Cart(uniqid(), $this->cartPolicy);
 
         $this->saveCart($cart);
 
