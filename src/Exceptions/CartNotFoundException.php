@@ -1,7 +1,5 @@
 <?php namespace Ordercloud\Cart\Exceptions;
 
-use Exception;
-
 class CartNotFoundException extends CartException
 {
     /**

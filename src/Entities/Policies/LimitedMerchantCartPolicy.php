@@ -3,8 +3,6 @@
 use Ordercloud\Cart\Entities\CartItem;
 use Ordercloud\Cart\Exceptions\MaxMerchantsException;
 use Ordercloud\Entities\Organisations\OrganisationShort;
-use Ordercloud\Ordercloud;
-use Ordercloud\Requests\Settings\GetSettingsByOrganisationRequest;
 
 class LimitedMerchantCartPolicy extends BaseCartPolicy implements CartPolicy
 {

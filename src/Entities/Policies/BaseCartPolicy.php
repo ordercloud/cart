@@ -1,7 +1,6 @@
 <?php namespace Ordercloud\Cart\Entities\Policies;
 
 use Ordercloud\Cart\Entities\CartItem;
-use Ordercloud\Cart\Exceptions\CartItemNotFoundException;
 
 class BaseCartPolicy implements CartPolicy
 {
