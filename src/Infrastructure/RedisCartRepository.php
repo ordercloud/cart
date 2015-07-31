@@ -1,6 +1,7 @@
 <?php namespace Ordercloud\Cart\Infrastructure;
 
 use Ordercloud\Cart\Entities\Cart;
+use Ordercloud\Cart\Exceptions\CartNotFoundException;
 use Predis\Client;
 
 class RedisCartRepository implements CartRepository
@@ -16,18 +17,13 @@ class RedisCartRepository implements CartRepository
         $this->redis = $redis;
     }
 
-    /**
-     * @param int $id
-     *
-     * @return Cart|null
-     */
     public function findById($id)
     {
-        if ($this->redis->exists($this->getCartKey($id))) {
-            return unserialize($this->redis->get($this->getCartKey($id)));
+        if ( ! $this->redis->exists($this->getCartKey($id))) {
+            throw new CartNotFoundException($id);
         }
 
-        return null;
+        return unserialize($this->redis->get($this->getCartKey($id)));
     }
 
     public function save(Cart $cart)

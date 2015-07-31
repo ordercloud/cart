@@ -3,6 +3,7 @@
 use Ordercloud\Cart\Entities\Cart;
 use Ordercloud\Cart\Entities\Policies\BaseCartPolicy;
 use Ordercloud\Cart\Entities\Policies\CartPolicy;
+use Ordercloud\Cart\Exceptions\CartNotFoundException;
 use Ordercloud\Cart\Infrastructure\CartRepository;
 use Ordercloud\Entities\Products\Product;
 
@@ -61,6 +62,8 @@ class CartService
 
     /**
      * @param int $cartId
+     *
+     * @throws CartNotFoundException
      */
     public function destroyCart($cartId)
     {
@@ -75,6 +78,8 @@ class CartService
      * @param int     $quantity
      * @param array   $options array( optionSetId => optionId, ... )
      * @param array   $extras array( extraSetId => extraId, ... )
+     *
+     * @throws CartNotFoundException
      */
     public function addItem($cartId, Product $product, $quantity = 1, array $options = [], array $extras = [])
     {
@@ -88,6 +93,8 @@ class CartService
     /**
      * @param int    $cartId
      * @param string $itemPuid
+     *
+     * @throws CartNotFoundException
      */
     public function removeItem($cartId, $itemPuid)
     {
