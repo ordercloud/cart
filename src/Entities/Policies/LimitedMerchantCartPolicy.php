@@ -1,7 +1,7 @@
 <?php namespace Ordercloud\Cart\Entities\Policies;
 
 use Ordercloud\Cart\Entities\CartItem;
-use Ordercloud\Cart\Exceptions\CartItemException;
+use Ordercloud\Cart\Exceptions\MaxMerchantsException;
 use Ordercloud\Entities\Organisations\OrganisationShort;
 use Ordercloud\Ordercloud;
 use Ordercloud\Requests\Settings\GetSettingsByOrganisationRequest;
@@ -9,22 +9,13 @@ use Ordercloud\Requests\Settings\GetSettingsByOrganisationRequest;
 class LimitedMerchantCartPolicy extends BaseCartPolicy implements CartPolicy
 {
     /**
-     * @var Ordercloud
+     * @var MaxMerchantSettingProvider
      */
-    private $ordercloud;
-    /**
-     * @var int
-     */
-    private $organisationId;
+    private $maxMerchantSettingProvider;
 
-    /**
-     * @param Ordercloud $ordercloud
-     * @param int        $organisationId
-     */
-    public function __construct(Ordercloud $ordercloud, $organisationId)
+    public function __construct(MaxMerchantSettingProvider $maxMerchantSettingProvider)
     {
-        $this->ordercloud = $ordercloud;
-        $this->organisationId = $organisationId;
+        $this->maxMerchantSettingProvider = $maxMerchantSettingProvider;
     }
 
     public function add(CartItem $newItem, array $items)
@@ -35,12 +26,10 @@ class LimitedMerchantCartPolicy extends BaseCartPolicy implements CartPolicy
     }
 
     /**
-     * @param \Ordercloud\Cart\Entities\CartItem         $item
-     * @param array|\Ordercloud\Cart\Entities\CartItem[] $items
+     * @param CartItem         $item
+     * @param array|CartItem[] $items
      *
-     * @return bool
-     *
-     * @throws \Ordercloud\Cart\Exceptions\CartItemException
+     * @throws MaxMerchantsException
      */
     protected function varifyCanAddProduct(CartItem $item, array $items)
     {
@@ -48,17 +37,17 @@ class LimitedMerchantCartPolicy extends BaseCartPolicy implements CartPolicy
             return;
         }
 
-        $merchantMax = $this->getMerchantMax();
+        $merchantMax = $this->maxMerchantSettingProvider->getMax();
         $newMerchantCount = sizeof($this->getMerchants($items)) + 1;
 
         if ($newMerchantCount > $merchantMax) {
-            throw CartItemException::maxMerchants($merchantMax, $item);
+            throw new MaxMerchantsException($item, $merchantMax);
         }
     }
 
     /**
      * @param OrganisationShort $newItemMerchant
-     * @param array|\Ordercloud\Cart\Entities\CartItem[]  $items
+     * @param array|CartItem[] $items
      *
      * @return bool
      */
@@ -74,7 +63,7 @@ class LimitedMerchantCartPolicy extends BaseCartPolicy implements CartPolicy
     }
 
     /**
-     * @param array|\Ordercloud\Cart\Entities\CartItem[] $items
+     * @param array|CartItem[] $items
      *
      * @return array|OrganisationShort[]
      */
@@ -87,17 +76,5 @@ class LimitedMerchantCartPolicy extends BaseCartPolicy implements CartPolicy
         }
 
         return $merchants;
-    }
-
-    /**
-     * @return int
-     */
-    protected function getMerchantMax()
-    {
-        $settings = $this->ordercloud->exec(
-            new GetSettingsByOrganisationRequest($this->organisationId)
-        );
-
-        return $settings->getValueByKeyName('max number of shops');
     }
 }
