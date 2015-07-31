@@ -174,7 +174,7 @@ class Cart
      */
     public function getItemsByMerchantID($merchantID)
     {
-        return array_filter($this->getItems(), function (CartItem $item) use ($merchantID)
+        return array_filter($this->getItems(), function(CartItem $item) use ($merchantID)
         {
             return $item->getProduct()->getOrganisation()->getId() == $merchantID;
         });

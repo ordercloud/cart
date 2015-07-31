@@ -26,7 +26,9 @@ class BaseCartPolicy implements CartPolicy
 
     public function update(CartItem $originalItem, CartItem $updatedItem, array $items)
     {
-        for ($i = 0; $i < sizeof($items); $i++) {
+        $nrItems = sizeof($items);
+
+        for ($i = 0; $i < $nrItems; $i++) {
             if ($items[$i]->getPuid() == $originalItem->getPuid()) {
                 $items[$i] = $updatedItem;
             }
