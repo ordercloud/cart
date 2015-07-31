@@ -2,6 +2,7 @@
 
 use Ordercloud\Cart\Entities\Policies\BaseCartPolicy;
 use Ordercloud\Cart\Entities\Policies\CartPolicy;
+use Ordercloud\Cart\Exceptions\CartItemNotFoundException;
 use Ordercloud\Entities\Organisations\OrganisationShort;
 use Ordercloud\Entities\Products\Product;
 
@@ -87,7 +88,9 @@ class Cart
     /**
      * @param string $puid
      *
-     * @return CartItem|null
+     * @return CartItem
+     *
+     * @throws CartItemNotFoundException
      */
     public function getItemByPuid($puid)
     {
@@ -97,7 +100,7 @@ class Cart
             }
         }
 
-        return null;
+        throw new CartItemNotFoundException($puid, $this);
     }
 
     /**
