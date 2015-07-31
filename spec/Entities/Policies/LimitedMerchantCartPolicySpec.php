@@ -9,11 +9,11 @@ use Prophecy\Argument;
 
 class LimitedMerchantCartPolicySpec extends ObjectBehavior
 {
-    function let(MaxMerchantSettingProvider $maxMerchantSettingProvider)
+    function let()
     {
-        $maxMerchantSettingProvider->getMax()->willReturn(1);
+        $maxNrMerchants = 1;
 
-        $this->beConstructedWith($maxMerchantSettingProvider);
+        $this->beConstructedWith($maxNrMerchants);
     }
 
     function it_can_add_a_product(CartItem $item, Product $product, OrganisationShort $merchant)

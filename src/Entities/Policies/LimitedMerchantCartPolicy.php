@@ -2,77 +2,48 @@
 
 use Ordercloud\Cart\Entities\CartItem;
 use Ordercloud\Cart\Exceptions\MaxMerchantsException;
-use Ordercloud\Entities\Organisations\OrganisationShort;
 
 class LimitedMerchantCartPolicy extends BaseCartPolicy implements CartPolicy
 {
     /**
-     * @var MaxMerchantSettingProvider
+     * @var int
      */
-    private $maxMerchantSettingProvider;
+    private $maxNrMerchants;
 
-    public function __construct(MaxMerchantSettingProvider $maxMerchantSettingProvider)
+    /**
+     * @param int $maxNrMerchants
+     */
+    public function __construct($maxNrMerchants)
     {
-        $this->maxMerchantSettingProvider = $maxMerchantSettingProvider;
+        $this->maxNrMerchants = $maxNrMerchants;
     }
 
     public function add(CartItem $newItem, array $items)
     {
-        $this->varifyCanAddProduct($newItem, $items); // TODO: This feels wrong
+        $newItems = parent::add($newItem, $items);
 
-        return parent::add($newItem, $items);
-    }
-
-    /**
-     * @param CartItem         $item
-     * @param array|CartItem[] $items
-     *
-     * @throws MaxMerchantsException
-     */
-    protected function varifyCanAddProduct(CartItem $item, array $items)
-    {
-        if ($this->isItemMerchantInCart($item->getProduct()->getOrganisation(), $items)) {
-            return;
+        if ($this->getMerchantCount($newItems) > $this->maxNrMerchants) {
+            throw new MaxMerchantsException($newItem, $this->maxNrMerchants);
         }
 
-        $merchantMax = $this->maxMerchantSettingProvider->getMax();
-        $newMerchantCount = sizeof($this->getMerchants($items)) + 1;
-
-        if ($newMerchantCount > $merchantMax) {
-            throw new MaxMerchantsException($item, $merchantMax);
-        }
-    }
-
-    /**
-     * @param OrganisationShort $newItemMerchant
-     * @param array|CartItem[] $items
-     *
-     * @return bool
-     */
-    protected function isItemMerchantInCart(OrganisationShort $newItemMerchant, array $items)
-    {
-        foreach ($this->getMerchants($items) as $merchant) {
-            if ($merchant->getId() == $newItemMerchant->getId()) {
-                return true;
-            }
-        }
-
-        return false;
+        return $newItems;
     }
 
     /**
      * @param array|CartItem[] $items
      *
-     * @return array|OrganisationShort[]
+     * @return int
      */
-    protected function getMerchants(array $items)
+    protected function getMerchantCount(array $items)
     {
         $merchants = [];
 
         foreach ($items as $item) {
-            $merchants[] = $item->getProduct()->getOrganisation();
+            $merchants[] = $item->getProduct()->getOrganisation()->getId();
         }
 
-        return $merchants;
+        $uniqueMerchants = array_unique($merchants);
+
+        return count($uniqueMerchants);
     }
 }
