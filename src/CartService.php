@@ -56,7 +56,7 @@ class CartService
     /**
      * @param Cart $cart
      */
-    public function saveCart(Cart $cart)
+    protected function saveCart(Cart $cart)
     {
         $this->repository->save($cart);
     }
