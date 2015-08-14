@@ -16,6 +16,8 @@ class Cart
      * @var CartPolicy
      */
     private $policy;
+    /** @var string */
+    private $note = '';
 
     /**
      * @param string     $id
@@ -25,14 +27,6 @@ class Cart
     {
         $this->id = $id;
         $this->policy = is_null($policy) ? new BaseCartPolicy() : $policy;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     /**
@@ -75,6 +69,22 @@ class Cart
         $updatedItem->setQuantity($quantity);
 
         $this->items = $this->policy->update($originalItem, $updatedItem, $this->items);
+    }
+
+    /**
+     * @param string $note
+     */
+    public function changeNote($note)
+    {
+        $this->note = $note;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -178,5 +188,13 @@ class Cart
         {
             return $item->getProduct()->getOrganisation()->getId() == $merchantID;
         });
+    }
+
+    /**
+     * @return string
+     */
+    public function getNote()
+    {
+        return $this->note;
     }
 }

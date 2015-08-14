@@ -123,4 +123,17 @@ class CartService
 
         $this->saveCart($cart);
     }
+
+    /**
+     * @param string $cartId
+     * @param string $note
+     */
+    public function changeNote($cartId, $note)
+    {
+        $cart = $this->getCartById($cartId);
+
+        $cart->changeNote($note);
+
+        $this->saveCart($cart);
+    }
 }
