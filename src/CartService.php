@@ -79,14 +79,15 @@ class CartService
      * @param int     $quantity
      * @param array   $options array( optionSetId => optionId, ... )
      * @param array   $extras array( extraSetId => extraId, ... )
+     * @param string  $note
      *
      * @throws CartNotFoundException
      */
-    public function addItem($cartId, Product $product, $quantity = 1, array $options = [], array $extras = [])
+    public function addItem($cartId, Product $product, $quantity = 1, array $options = [], array $extras = [], $note = null)
     {
         $cart = $this->getCartById($cartId);
 
-        $cart->addItem($product, $quantity, $options, $extras);
+        $cart->addItem($product, $quantity, $options, $extras, $note);
 
         $this->saveCart($cart);
     }

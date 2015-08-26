@@ -14,20 +14,26 @@ class CartItem
     private $options;
     /** @var array|CartItemExtra[] */
     private $extras;
+    /**
+     * @var string
+     */
+    private $note;
 
     /**
-     * @param Product                  $product
-     * @param int                      $quantity
-     * @param array|CartItemOption[]   $options
-     * @param array|CartItemExtra[]    $extras
+     * @param Product                $product
+     * @param int                    $quantity
+     * @param array|CartItemOption[] $options
+     * @param array|CartItemExtra[]  $extras
+     * @param string                 $note
      */
-    public function __construct(Product $product, $quantity = 1, array $options = [], array $extras = [])
+    public function __construct(Product $product, $quantity = 1, array $options = [], array $extras = [], $note = null)
     {
         $this->puid = uniqid(); //TODO create based on selected product+extras+options
         $this->product = $product;
         $this->quantity = $quantity;
         $this->options = CartItemOption::createFromArray($options, $product);
         $this->extras = CartItemExtra::createFromArray($extras, $product);
+        $this->note = $note;
     }
 
     /**
@@ -132,5 +138,13 @@ class CartItem
         }
 
         return floatval($amount);
+    }
+
+    /**
+     * @return string
+     */
+    public function getNote()
+    {
+        return $this->note;
     }
 }

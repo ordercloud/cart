@@ -34,10 +34,11 @@ class Cart
      * @param int     $quantity
      * @param array   $options
      * @param array   $extras
+     * @param string  $note
      */
-    public function addItem(Product $product, $quantity = 1, array $options = [], array $extras = [])
+    public function addItem(Product $product, $quantity = 1, array $options = [], array $extras = [], $note = null)
     {
-        $item = new CartItem($product, $quantity, $options, $extras);
+        $item = new CartItem($product, $quantity, $options, $extras, $note);
 
         $this->items = $this->policy->add($item, $this->items);
     }
