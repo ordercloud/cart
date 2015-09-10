@@ -8,13 +8,19 @@ class RedisCartRepository implements CartRepository
 {
     /** @var Client */
     private $redis;
+    /**
+     * @var string|null
+     */
+    private $keyPrefix;
 
     /**
-     * @param Client $redis
+     * @param Client      $redis
+     * @param string|null $keyPrefix The prefix to use when storing carts in redis
      */
-    public function __construct(Client $redis)
+    public function __construct(Client $redis, $keyPrefix = null)
     {
         $this->redis = $redis;
+        $this->setKeyPrefix($keyPrefix);
     }
 
     public function findById($id)
@@ -36,8 +42,25 @@ class RedisCartRepository implements CartRepository
         $this->redis->del($this->getCartKey($cart->getId()));
     }
 
-    private function getCartKey($userID)
+    /**
+     * @param string $keyPrefix
+     */
+    protected function setKeyPrefix($keyPrefix)
     {
-        return "carts.$userID";
+        if ($keyPrefix) {
+            $keyPrefix = rtrim($keyPrefix, '.') . '.';
+        }
+
+        $this->keyPrefix = $keyPrefix;
+    }
+
+    /**
+     * @param string $cartId
+     *
+     * @return string
+     */
+    private function getCartKey($cartId)
+    {
+        return "{$this->keyPrefix}carts.$cartId";
     }
 }
