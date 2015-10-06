@@ -78,7 +78,7 @@ class CartService
      * @param Product $product
      * @param int     $quantity
      * @param array   $options array( optionSetId => optionId, ... )
-     * @param array   $extras array( extraSetId => extraId, ... )
+     * @param array   $extras array( extraSetId_extraId, ... )
      * @param string  $note
      *
      * @throws CartNotFoundException

@@ -31,12 +31,12 @@ class CartItemExtra
     {
         $extras = [];
 
-        foreach ($selectedExtras as $setID => $extraID) {
-            $extraSet = $product->getExtraSetByID($setID);
+        foreach ($selectedExtras as $extra) {
+            list($setId, $extraId) = explode('_', $extra);
 
-            $extra = $extraSet->getExtraByID($extraID);
+            $extraSet = $product->getExtraSetByID($setId);
 
-            $extras[] = new static($extraSet, $extra);
+            $extras[] = new static($extraSet, $extraSet->getExtraByID($extraId));
         }
 
         return $extras;
